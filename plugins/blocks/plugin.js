@@ -44,8 +44,8 @@
         upcast: function(element) {
           if(element.name == 'div' && element.hasClass('blocks')) {
             var blockId = '';
-            if (blockId = element.children[0].value) {
-              element.children[0].value = getBlockHtmlFromId(blockId);
+            if ((element.children.length > 0) && (blockId = element.children[0].value)) {
+              element.attributes['data-block'] = blockId;
             }
             return true;
           }
@@ -57,7 +57,7 @@
           return element;
         },
         init: function() {
-          this.setData('block', this.parts.div.getAttribute('data-block') || '');
+          this.setData('block', this.parts.div.getHtml());
         },
         data: function() {
           this.parts.div.setAttribute('data-block', this.data.block);
