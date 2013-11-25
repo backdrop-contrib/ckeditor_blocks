@@ -3,7 +3,7 @@
 (function($) {
 
   CKEDITOR.dialog.add( 'blocks', function( editor ) {
-    var lang = editor.lang.featurette,
+    var lang = editor.lang.blocks,
     commonLang = editor.lang.common;
 
     var options = [];
@@ -34,7 +34,7 @@
             {
               id: 'block',
               type: 'select',
-              label: lang.alignTitle,
+              label: lang.blockTitle,
               items: items,
               setup: function( widget ) {
                 this.setValue( widget.data.block );
