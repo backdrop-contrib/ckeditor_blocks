@@ -109,7 +109,7 @@ function ckeditor_blocks_ckeditor_plugin() {
     // section of the profile settings.
     'desc' => t('Plugin for adding Drupal blocks within CKEditor'),
     // The full path to the CKEditor plugin directory, trailing slash included.
-    'path' => drupal_get_path('module', 'ckeditor_blocks') . '/plugins/blocks/',
+    'path' => base_path() . drupal_get_path('module', 'ckeditor_blocks') . '/plugins/blocks/',
     // Plugin buttons definition (optional).
     'buttons' => array(
       'Blocks' => array('label' => 'Block', 'icon' => 'icons/blocks.png'),
