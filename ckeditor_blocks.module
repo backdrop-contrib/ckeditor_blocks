@@ -37,7 +37,7 @@ function ckeditor_blocks_get_block($module, $delta, $check_roles = FALSE) {
   $block_content = module_invoke($block->module, 'block_view', $block->delta);
   // Allow modules to modify the block before it is viewed, via either
   // hook_block_view_alter() or hook_block_view_MODULE_DELTA_alter().
-  $block->subject = $block_content['subject'];
+  $block->subject = (empty($block_content['subject'])) ? '' : $block_content['subject'];
   drupal_alter(array('block_view', "block_view_{$block->module}_" . str_replace('-', '_', $block->delta)), $block_content, $block);
   if (isset($block_content['content'])) {
     $render = array(
