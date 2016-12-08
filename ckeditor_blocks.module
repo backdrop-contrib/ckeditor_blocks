@@ -72,11 +72,20 @@ function ckeditor_blocks_blocks_ajax() {
   // Allow the block list to be altered.
   drupal_alter('ckeditor_blocks_list', $blocks);
 
+  // Sort the blocks by module, then delta.
+  $block_sort = array();
+  foreach($blocks as $k => $v) {
+    $block_sort['module'][$k] = $v['module'];
+    $block_sort['delta'][$k] = $v['delta'];
+  }
+  array_multisort($block_sort['module'], SORT_ASC, $block_sort['delta'], SORT_ASC, $blocks);
+
   foreach($blocks as $block) {
     if ($block['module'] != 'system' || $block['delta'] != 'main') { // Don't allow main block because of recursion.
-      $options['[block:' . $block['module'] . '=' . $block['delta'] . ']'] = $block['info'];
+      $options['[block:' . $block['module'] . '=' . $block['delta'] . ']'] = '('.$block['module'].') '.$block['info'];
     }
   }
+
   drupal_json_output($options);
 }
 
