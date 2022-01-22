@@ -9,7 +9,7 @@
     var options = [];
     $.ajax({ 
       type: "GET",
-      url: Drupal.settings.basePath + 'ckeditor/blocks',
+      url: Backdrop.settings.basePath + 'ckeditor/blocks',
       success: function(result) {
         options = result;
       },

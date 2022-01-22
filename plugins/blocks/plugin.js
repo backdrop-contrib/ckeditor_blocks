@@ -15,7 +15,7 @@
         var parts = id.replace('[block:', '').replace(']', '').split('=');
         $.ajax({ 
           type: "GET",
-          url: Drupal.settings.basePath + 'ckeditor/block/' + parts[0] + '/' + parts[1],
+          url: Backdrop.settings.basePath + 'ckeditor/block/' + parts[0] + '/' + parts[1],
           success: function(result) {
             ret = result.html;
           },

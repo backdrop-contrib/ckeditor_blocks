@@ -1,5 +1,7 @@
 name        = CKEditor Blocks
 description = "Allow blocks to be inserted into ckeditor."
-core        = 7.x
+backdrop = 1.x
+type = module
 package     = User interface
 dependencies[] = ckeditor
+
