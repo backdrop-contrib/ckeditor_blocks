@@ -23,9 +23,10 @@ function ckeditor_blocks_menu() {
  * Render a specific block
  */
 function ckeditor_blocks_get_block($module, $delta, $check_roles = FALSE) {
-  $block = block_load($module, $delta);
-
+  global $language;
+  $block = block_custom_block_load($delta, $language->langcode);
   // Check user roles if required.
+  // Ignoring this part for now
   if ($check_roles) {
     global $user;
     $block_roles = _ckeditor_blocks_roles();
@@ -34,19 +35,27 @@ function ckeditor_blocks_get_block($module, $delta, $check_roles = FALSE) {
     }
   }
 
-  $block_content = module_invoke($block->module, 'block_view', $block->delta);
+  $block_content = module_invoke($module, 'block_view', $delta);
+  // print_r($block_content);exit;
   // Allow modules to modify the block before it is viewed, via either
   // hook_block_view_alter() or hook_block_view_MODULE_DELTA_alter().
-  $block->subject = (empty($block_content['subject'])) ? '' : $block_content['subject'];
-  backdrop_alter(array('block_view', "block_view_{$block->module}_" . str_replace('-', '_', $block->delta)), $block_content, $block);
+  $block['subject'] = (empty($block_content['subject'])) ? '' : $block_content['subject'];
+  backdrop_alter(array('block_view', "block_view_{$module}_" . str_replace('-', '_', $delta)), $block_content, $block);
+  // print($block_content['content']);exit;
   if (isset($block_content['content'])) {
-    $render = array(
-      'elements' => array(
-        '#block' => $block,
-        '#children' => render($block_content['content']),
-      ),
+    // $render = array(
+    //   'elements' => array(
+    //     '#block' => $block,
+    //     '#children' => render($block_content['content']),
+    //   ),
+    // );
+     // Assemble a structured content array.
+    $content = (object) array(
+      'title' => $block['subject'],
+      'content' => $block_content['content'],
     );
-    $output = theme('block', $render);
+   // $output = theme('block', $render);
+   $output = theme('block', array('content' => $content, 'block' => $block));
   }
   else {
     $output = '';
@@ -67,16 +76,48 @@ function ckeditor_blocks_blocks_ajax() {
 
   global $theme_key;
   $options = array();
-  $blocks = _block_rehash($theme_key);
+  #$blocks = _block_rehash($theme_key);
+  $module_blocks = layout_get_block_info();
+  
 
   // Allow the block list to be altered.
-  backdrop_alter('ckeditor_blocks_list', $blocks);
+  backdrop_alter('ckeditor_blocks_list', $module_blocks);
+  //print_r($blocks);exit;
+  // foreach ($blocks as $block) {
+  //   print_r($block);
+  //   exit;
+  //   if ($block['module'] != 'system' || $block['delta'] != 'main') { // Don't allow main block because of recursion.
+  //     $options['[block:' . $block['module'] . '=' . $block['delta'] . ']'] = $block['info'];
+  //   }
+  // }
 
-  foreach ($blocks as $block) {
-    if ($block['module'] != 'system' || $block['delta'] != 'main') { // Don't allow main block because of recursion.
-      $options['[block:' . $block['module'] . '=' . $block['delta'] . ']'] = $block['info'];
+  foreach ($module_blocks as $module => $blocks) {
+    if (!empty($blocks)) {
+      foreach ($blocks as $delta => $block) {
+        $options['[block:' . $module. '=' . $delta . ']'] = $block['info'];
+      }
     }
   }
+
+  //print_r($options);exit;
+  
+
+//   $options = {
+//     "[block:comment=recent]":"Recent comments",
+//     "[block:node=syndicate]":"Syndicate",
+//     "[block:node=recent]":"Recent content",
+//     "[block:search=form]":"Search form",
+//     "[block:shortcut=shortcuts]":"Shortcuts",
+//     "[block:system=powered-by]":"Powered by Drupal",
+//     "[block:system=help]":"System help",
+//     "[block:system=navigation]":"Navigation",
+//     "[block:system=management]":"Management",
+//     "[block:system=user-menu]":"User menu",
+//     "[block:system=main-menu]":"Main menu",
+//     "[block:user=login]":"User login",
+//     "[block:user=new]":"Who\u0027s new",
+//     "[block:user=online]":"Who\u0027s online"
+//  }
   backdrop_json_output($options);
 }
 
