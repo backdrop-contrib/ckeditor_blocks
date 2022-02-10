@@ -43,24 +43,15 @@ function ckeditor_blocks_get_block($module, $delta, $check_roles = FALSE) {
   backdrop_alter(array('block_view', "block_view_{$module}_" . str_replace('-', '_', $delta)), $block_content, $block);
   // print($block_content['content']);exit;
   if (isset($block_content['content'])) {
-    // $render = array(
-    //   'elements' => array(
-    //     '#block' => $block,
-    //     '#children' => render($block_content['content']),
-    //   ),
-    // );
-     // Assemble a structured content array.
     $content = (object) array(
       'title' => $block['subject'],
       'content' => $block_content['content'],
     );
-   // $output = theme('block', $render);
-   $output = theme('block', array('content' => $content, 'block' => $block));
+    $output = theme('block', array('content' => $content, 'block' => $block));
   }
   else {
     $output = '';
   }
-
   return $output;
 }
 
@@ -170,7 +161,6 @@ function _ckeditor_blocks($text, $filter, $format) {
  * Settings callback for the backdrop block filter.
  */
 function _ckeditor_blocks_settings($form, &$form_state, $filter, $format, $defaults=null) {
-//  $filter->settings += $defaults;
   $settings['check_roles'] = array(
     '#type' => 'checkbox',
     '#title' => t('Check the roles assigned by the Block module'),
