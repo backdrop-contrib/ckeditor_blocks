@@ -36,8 +36,9 @@
               type: 'select',
               label: lang.blockTitle,
               items: items,
+              default: items[0],
               setup: function( widget ) {
-                this.setValue( widget.data.block );
+                this.setValue( 'All' || widget.data.block );
               },
               commit: function( widget ) {
                 widget.setData( 'block', this.getValue() );

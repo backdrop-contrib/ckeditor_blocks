@@ -59,7 +59,6 @@ function ckeditor_blocks_get_block($module, $delta, $check_roles = FALSE) {
       'title' => $block['subject'],
       'content' => $block_content['content'],
     );
-   // $output = theme('block', $render);
    $output = theme('block', array('content' => $content, 'block' => $block));
   }
   elseif (isset($block_content)){
@@ -71,7 +70,6 @@ function ckeditor_blocks_get_block($module, $delta, $check_roles = FALSE) {
   }else{
     $output = '';
   }
-
   return $output;
 }
 
@@ -87,6 +85,7 @@ function ckeditor_blocks_blocks_ajax() {
 
   global $theme_key;
   $options = array();
+  $options['All'] = 'Select a block';
   $module_blocks = layout_get_block_info();
   // Allow the block list to be altered.
   backdrop_alter('ckeditor_blocks_list', $module_blocks);
