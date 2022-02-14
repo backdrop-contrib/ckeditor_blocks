@@ -26,7 +26,7 @@ function ckeditor_blocks_get_block($module, $delta, $check_roles = FALSE) {
   global $language;
   $block = block_custom_block_load($delta, $language->langcode);
   // Check user roles if required.
-  // Ignoring this part for now
+
   if ($check_roles) {
     global $user;
     $block_roles = _ckeditor_blocks_roles();
@@ -34,22 +34,40 @@ function ckeditor_blocks_get_block($module, $delta, $check_roles = FALSE) {
       return '';
     }
   }
+  // $module = 'views';
+  // $block_content = module_invoke($module, 'block_view', $delta);
+  //print(module_invoke('views', 'block_view', 'association-block'));
+  $views_name = '';
+  if($module == 'views'){
+    $views_delta_arr = explode('-block',$delta);
+    if(!empty($views_delta_arr)){
+      $views_name = $views_delta_arr[0];
+    }
+    $block_content = views_embed_view($views_name);
+  }else{
+    $block_content = module_invoke($module, 'block_view', $delta);
+  }
 
-  $block_content = module_invoke($module, 'block_view', $delta);
-  // print_r($block_content);exit;
   // Allow modules to modify the block before it is viewed, via either
   // hook_block_view_alter() or hook_block_view_MODULE_DELTA_alter().
   $block['subject'] = (empty($block_content['subject'])) ? '' : $block_content['subject'];
   backdrop_alter(array('block_view', "block_view_{$module}_" . str_replace('-', '_', $delta)), $block_content, $block);
-  // print($block_content['content']);exit;
+  
   if (isset($block_content['content'])) {
+     // Assemble a structured content array.
     $content = (object) array(
       'title' => $block['subject'],
       'content' => $block_content['content'],
     );
-    $output = theme('block', array('content' => $content, 'block' => $block));
+   $output = theme('block', array('content' => $content, 'block' => $block));
   }
-  else {
+  elseif (isset($block_content)){
+    $content = (object) array(
+      'title' => $block['subject'],
+      'content' => $block_content,
+    );
+    $output = theme('block', array('content' => $content, 'block' => $block));
+  }else{
     $output = '';
   }
   return $output;
@@ -67,9 +85,8 @@ function ckeditor_blocks_blocks_ajax() {
 
   global $theme_key;
   $options = array();
-  #$blocks = _block_rehash($theme_key);
+  $options['All'] = 'Select a block';
   $module_blocks = layout_get_block_info();
-  
   // Allow the block list to be altered.
   backdrop_alter('ckeditor_blocks_list', $module_blocks);
   foreach ($module_blocks as $module => $blocks) {
@@ -101,19 +118,21 @@ function ckeditor_blocks_block_ajax($module, $delta) {
  * @return type
  */
 function ckeditor_blocks_ckeditor_plugins() {
+  $plugins = array();
   $plugins['blocks'] = array(
-    'path' => backdrop_get_path('module', 'ckeditor_blocks') . '/plugins/blocks',
-    'file' => 'plugin.js',
-    'internal' => FALSE,
-    'buttons' => array(
-      'Blocks' => array(
-        'label' => t('Blocks'),
-        'image' => base_path() . backdrop_get_path('module', 'ckeditor_blocks') . '/plugins/blocks/icons/blocks.png',
-        'image_alternative' =>'{insert block}',
+      'path' => backdrop_get_path('module', 'ckeditor_blocks') . '/plugins/blocks',
+      'file' => 'plugin.js',
+      'internal' => FALSE,
+      'buttons' => array(
+          'Blocks' => array(
+              'label' => t('Blocks'),
+              'image' => base_path() . backdrop_get_path('module', 'ckeditor_blocks') . '/plugins/blocks/icons/blocks.png',
+              'image_alternative' =>'{insert block}',
+          ),
       ),
-    ),
   );
-  return $plugins;
+
+    return $plugins;
 }
 
 /**
