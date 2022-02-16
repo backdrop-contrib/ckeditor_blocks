@@ -30,15 +30,13 @@ function ckeditor_blocks_get_block($module, $delta, $check_roles = FALSE) {
   if ($check_roles) {
     global $user;
     $block_roles = _ckeditor_blocks_roles();
-    if (isset($block_roles[$block->module][$block->delta]) && !array_intersect($block_roles[$block->module][$block->delta], array_keys($user->roles))) {
+    if (isset($block_roles[$module][$delta]) && !array_intersect($block_roles[$module][$delta], array_keys($user->roles))) {
       return '';
     }
   }
-  // $module = 'views';
-  // $block_content = module_invoke($module, 'block_view', $delta);
-  //print(module_invoke('views', 'block_view', 'association-block'));
   $views_name = '';
   if($module == 'views'){
+    // Get the view name from views block name 
     $views_delta_arr = explode('-block',$delta);
     if(!empty($views_delta_arr)){
       $views_name = $views_delta_arr[0];
@@ -88,11 +86,17 @@ function ckeditor_blocks_blocks_ajax() {
   $options['All'] = 'Select a block';
   $module_blocks = layout_get_block_info();
   // Allow the block list to be altered.
+  $excluded_modules = array('system','devel', 'rules','layout','dashboard','dashboard_plus');
+  $excluded_deltas = array('content');
   backdrop_alter('ckeditor_blocks_list', $module_blocks);
   foreach ($module_blocks as $module => $blocks) {
-    if (!empty($blocks)) {
-      foreach ($blocks as $delta => $block) {
-        $options['[block:' . $module. '=' . $delta . ']'] = $block['info'];
+    if(!in_array($module, $excluded_modules)){    
+      if (!empty($blocks)) {
+        foreach ($blocks as $delta => $block) {
+          if(!in_array($delta, $excluded_deltas)){
+            $options['[block:' . $module. '=' . $delta . ']'] = $block['info'];
+          }        
+        }
       }
     }
   }
