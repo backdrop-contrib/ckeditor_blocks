@@ -23,6 +23,13 @@ function ckeditor_blocks_menu() {
  * Render a specific block
  */
 function ckeditor_blocks_get_block($module, $delta, $check_roles = FALSE) {
+
+  static $blocks = array();
+  if(isset($blocks[$module.$delta])) {
+    return "";
+  }
+  $blocks[$module.$delta] = true;
+
   global $language;
   $block = block_custom_block_load($delta, $language->langcode);
   // Check user roles if required.
