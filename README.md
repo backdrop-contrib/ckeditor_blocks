@@ -18,8 +18,8 @@ Install this module using the official Backdrop CMS instructions at
 backdropcms.org/guide/modules.
 
 This module works best when used with a text format that does not include the following filters
-* Limit allowed HTML tags
-* Convert line breaks into HTML (i.e. <br> and <p>)
+* `Limit allowed HTML tags`
+* `Convert line breaks into HTML (i.e. <br> and <p>)`
 
 ## Current maintainers
 
