@@ -17,8 +17,13 @@ Under development.
 Install this module using the official Backdrop CMS instructions at 
 backdropcms.org/guide/modules.
 
-This module works best when used with a text format that does not include the following filters
+This module works best when used with the following text format:
 * `Limit allowed HTML tags`
+
+And when run AFTER:
+* `Convert line breaks into HTML (i.e. <br> and <p>)`
+
+![image](https://user-images.githubusercontent.com/3144571/160269381-28302f4e-3bfb-4e23-8734-b7be1999a105.png)
 
 ## Current maintainers
 
