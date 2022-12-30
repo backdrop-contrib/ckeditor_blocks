@@ -22,7 +22,7 @@ function ckeditor_blocks_menu() {
 /**
  * Render a specific block
  */
-function ckeditor_blocks_get_block($module, $delta, $check_roles = FALSE) {
+function ckeditor_blocks_get_block($module, $delta) {
 
   static $blocks = array();
   if(isset($blocks[$module.$delta])) {
@@ -32,17 +32,9 @@ function ckeditor_blocks_get_block($module, $delta, $check_roles = FALSE) {
 
   global $language;
   $block = block_custom_block_load($delta, $language->langcode);
-  // Check user roles if required.
-  // if ($check_roles) {
-  //   global $user;
-  //   $block_roles = _ckeditor_blocks_roles();
-  //   if (isset($block_roles[$module][$delta]) && !array_intersect($block_roles[$module][$delta], array_keys($user->roles))) {
-  //     return '';
-  //   }
-  // }
   $views_name = '';
   if($module == 'views'){
-    // Get the view name from views block name 
+    // Get the view name from views block name
     $views_delta_arr = explode('-',$delta);
     if(!empty($views_delta_arr)){
       $views_name = $views_delta_arr[0];
@@ -71,7 +63,7 @@ function ckeditor_blocks_get_block($module, $delta, $check_roles = FALSE) {
   // hook_block_view_alter() or hook_block_view_MODULE_DELTA_alter().
   $block->subject = (empty($block_content['subject'])) ? '' : $block_content['subject'];
   backdrop_alter(array('block_view', "block_view_{$module}_" . str_replace('-', '_', $delta)), $block_content, $block);
-  
+
   if (isset($block_content['content'])) {
      // Assemble a structured content array.
     $content = (object) array(
@@ -111,12 +103,12 @@ function ckeditor_blocks_blocks_ajax() {
   $excluded_deltas = array('content');
   backdrop_alter('ckeditor_blocks_list', $module_blocks);
   foreach ($module_blocks as $module => $blocks) {
-    if(in_array($module, $included_modules)){    
+    if(in_array($module, $included_modules)){
       if (!empty($blocks)) {
         foreach ($blocks as $delta => $block) {
           if(!in_array($delta, $excluded_deltas)){
             $options['[block:' . $module. '=' . $delta . ']'] = $block['info'];
-          }        
+          }
         }
       }
     }
@@ -168,11 +160,7 @@ function ckeditor_blocks_filter_info() {
     'title' => t('Backdrop blocks'),
     'description' => t('Inserts the contents of a block into a textarea using [block:module=delta] tags.'),
     'process callback' => '_ckeditor_blocks',
-    'settings callback' => '_ckeditor_blocks_settings',
     'tips callback' => '_ckeditor_blocks_tips',
-    'default settings' => array(
-      'check_roles' => 0,
-    ),
     'cache' => FALSE,
   );
   return $filters;
@@ -193,25 +181,11 @@ function _ckeditor_blocks($text, $filter, $format) {
       $module = $match[1][$key];
       $delta = $match[2][$key];
 
-      $check_roles = !empty($filter->settings['check_roles']);
-      $repl[] =  ckeditor_blocks_get_block($module, $delta, $check_roles);
+      $repl[] =  ckeditor_blocks_get_block($module, $delta);
     }
     return str_replace($raw_tags, $repl, $text);
   }
   return $text;
-}
-
-/**
- * Settings callback for the backdrop block filter.
- */
-function _ckeditor_blocks_settings($form, &$form_state, $filter, $format, $defaults=null) {
-  $settings['check_roles'] = array(
-    '#type' => 'checkbox',
-    '#title' => t('Check the roles assigned by the Block module - WARNING: This does not work yet.'),
-    '#default_value' => $filter->settings['check_roles'],
-    '#description' => t('Without this checked, anyone can see backdrop blocks.'),
-  );
-  return $settings;
 }
 
 function _ckeditor_blocks_tips($filter, $format, $long = FALSE) {
@@ -222,22 +196,6 @@ function _ckeditor_blocks_tips($filter, $format, $long = FALSE) {
     return t('You may use <a href="@ckeditor_blocks_help">[block:<em>module</em>=<em>delta</em>] tags</a> to display the contents of block <em>delta</em> for module <em>module</em>.',
     array("@ckeditor_blocks_help" => url("filter/tips/$format->format", array('fragment' => 'filter-ckeditor_blocks'))));
   }
-}
-
-/**
- * Helper function to load and cache the block roles.
- */
-function _ckeditor_blocks_roles() {
-  // Build an array of roles for each block.
-  $block_roles = &backdrop_static(__FUNCTION__, NULL);
-  if (!isset($block_roles)) {
-    $block_roles = array();
-    $result = db_query('SELECT module, delta, rid FROM {block_role}');
-    foreach ($result as $record) {
-      $block_roles[$record->module][$record->delta][] = $record->rid;
-    }
-  }
-  return $block_roles;
 }
 
 // Disabling entity caching for all nodes.
