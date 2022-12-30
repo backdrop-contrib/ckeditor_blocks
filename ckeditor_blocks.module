@@ -198,22 +198,6 @@ function _ckeditor_blocks_tips($filter, $format, $long = FALSE) {
   }
 }
 
-/**
- * Helper function to load and cache the block roles.
- */
-function _ckeditor_blocks_roles() {
-  // Build an array of roles for each block.
-  $block_roles = &backdrop_static(__FUNCTION__, NULL);
-  if (!isset($block_roles)) {
-    $block_roles = array();
-    $result = db_query('SELECT module, delta, rid FROM {block_role}');
-    foreach ($result as $record) {
-      $block_roles[$record->module][$record->delta][] = $record->rid;
-    }
-  }
-  return $block_roles;
-}
-
 // Disabling entity caching for all nodes.
 // @TODO Still looking for better solution.
 
