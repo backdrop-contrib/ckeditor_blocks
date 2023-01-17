@@ -135,21 +135,20 @@ function ckeditor_blocks_block_ajax($module, $delta) {
  * @return type
  */
 function ckeditor_blocks_ckeditor_plugins() {
-  $plugins = array();
+  $path = backdrop_get_path('module', 'ckeditor_blocks') . '/plugins/blocks';
   $plugins['blocks'] = array(
-      'path' => backdrop_get_path('module', 'ckeditor_blocks') . '/plugins/blocks',
+      'path' => $path,
       'file' => 'plugin.js',
       'internal' => FALSE,
       'buttons' => array(
           'Blocks' => array(
               'label' => t('Blocks'),
-              'image' => base_path() . backdrop_get_path('module', 'ckeditor_blocks') . '/plugins/blocks/icons/blocks.png',
-              'image_alternative' =>'{insert block}',
+              'image' => $path . '/icons/blocks.png',
           ),
       ),
   );
 
-    return $plugins;
+  return $plugins;
 }
 
 /**
