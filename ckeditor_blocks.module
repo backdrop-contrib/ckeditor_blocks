@@ -98,22 +98,40 @@ function ckeditor_blocks_blocks_ajax() {
   $options = array();
   $options['All'] = 'Select a block';
   $module_blocks = layout_get_block_info();
-  // Allow the block list to be altered.
-  $included_modules = array('views','block','node','webform');
-  $excluded_deltas = array('content');
-  backdrop_alter('ckeditor_blocks_list', $module_blocks);
+  $supported_block_modules = _ckeditor_blocks_get_supported_block_modules();
+
   foreach ($module_blocks as $module => $blocks) {
-    if(in_array($module, $included_modules)){
+    if (in_array($module, $supported_block_modules)) {
       if (!empty($blocks)) {
         foreach ($blocks as $delta => $block) {
-          if(!in_array($delta, $excluded_deltas)){
-            $options['[block:' . $module. '=' . $delta . ']'] = $block['info'];
-          }
+          $options["[block:$module=$delta]"] = $block['info'];
         }
       }
     }
   }
+
   backdrop_json_output($options);
+}
+
+/**
+ * Retrieves the list of supported block modules.
+ *
+ * Allows the supported block module list to be altered using
+ * hook_ckeditor_blocks_module_list_alter().
+ *
+ * @return array
+ */
+function _ckeditor_blocks_get_supported_block_modules() {
+  $supported_block_modules = array();
+  backdrop_alter('ckeditor_blocks_module_list', $supported_block_modules);
+  return $supported_block_modules;
+}
+
+/**
+ * Implements hook_ckeditor_blocks_module_list_alter().
+ */
+function ckeditor_blocks_ckeditor_blocks_module_list_alter(&$supported_block_modules) {
+  $supported_block_modules += array('views', 'block');
 }
 
 /**
@@ -132,7 +150,7 @@ function ckeditor_blocks_block_ajax($module, $delta) {
 /**
  * Implements hook_ckeditor_plugin().
  *
- * @return type
+ * @return array
  */
 function ckeditor_blocks_ckeditor_plugins() {
   $path = backdrop_get_path('module', 'ckeditor_blocks') . '/plugins/blocks';
@@ -167,11 +185,6 @@ function ckeditor_blocks_filter_info() {
 
 /**
  * Filter replacement callback.
- *
- * @param type $text
- * @param type $filter
- * @param type $format
- * @return type
  */
 function _ckeditor_blocks($text, $filter, $format) {
   if (preg_match_all("/\[block:([^=\\]]+)=?([^\\]]*)?\]/i", $text, $match)) {
@@ -180,7 +193,12 @@ function _ckeditor_blocks($text, $filter, $format) {
       $module = $match[1][$key];
       $delta = $match[2][$key];
 
-      $repl[] =  ckeditor_blocks_get_block($module, $delta);
+      $check_roles = !empty($filter->settings['check_roles']);
+
+      $supported_block_modules = _ckeditor_blocks_get_supported_block_modules();
+      if (in_array($module, $supported_block_modules)) {
+        $repl[] =  ckeditor_blocks_get_block($module, $delta, $check_roles);
+      }
     }
     return str_replace($raw_tags, $repl, $text);
   }
