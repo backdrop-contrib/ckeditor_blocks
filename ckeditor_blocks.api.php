@@ -1,19 +1,20 @@
 <?php
 /**
- * Edit CKEditor Block list
- *
- * This hook is invoked from ckeditor_blocks_blocks_ajax() when retrieving
- * a list of blocks to be inserted. It allows you to restrict blocks globally.
- *
- * @param $blocks
- *   A list of blocks that can be inserted using the plugin.
+ * @file
+ * API documentation for CKEditor Blocks.
  */
 
-function hook_ckeditor_blocks_list_alter(&$blocks) {
-  foreach ($blocks as $key => $value) {
-    // Never allow Devel blocks to be added.
-    if ($value['module'] == 'devel') {
-      unset($blocks[$key]);
-    }
-  }
+/**
+ * Edit CKEditor Block list
+ *
+ * This hook is invoked when retrieving the list of supported block modules to
+ * be inserted with the plugin or to be rendered. It allows you to add new
+ * block types by adding modules to the supported block modules list.
+ *
+ * @param $supported_block_modules
+ *   A list of supported modules for blocks to be inserted using the plugin.
+ *   Passed by reference.
+ */
+function hook_ckeditor_blocks_module_list_alter(&$supported_block_modules) {
+  $supported_block_modules += array('my_module');
 }
