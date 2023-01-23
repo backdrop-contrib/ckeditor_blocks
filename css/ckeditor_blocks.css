@@ -1,0 +1,55 @@
+/**
+ * @file
+ * Default styling for displaying CKEditor embedded blocks.
+ *
+ * Blocks in the editor shows title and description, and are all styled
+ * identically, as in the Layout editor, creating a more consistent experience.
+ */
+
+/**
+ * CSS copied from layout.admin.css for .layout-editor-block.
+ */
+.ckeditor-blocks-editor-block {
+  margin: -1px 1px 15px -1px;
+  background: #FFF;
+  border-radius: 4px;
+  -webkit-box-shadow: 2px 2px 0 0 #d0d0d0;
+  -moz-box-shadow: 2px 2px 0 0 #d0d0d0;
+  box-shadow: 2px 2px 0 0 #d0d0d0;
+}
+
+/**
+ * CSS copied from layout.admin.css for .layout-editor-block-title.
+ */
+.ckeditor-blocks-editor-block-title {
+  border: 0;
+  background: #e9e8e8;
+  border-radius: 4px 4px 0 0;
+  padding: 0.4em 0.5em;
+}
+.ckeditor-blocks-editor-block-title .text {
+  font-size: 1.1em;
+  line-height: 1.75;
+  font-weight: bold;
+}
+
+/**
+ * CSS copied from layout.admin.css for .layout-editor-block-content.
+ */
+.ckeditor-blocks-editor-block-content {
+  border: 1px solid #f7f7f7;
+  border-top: none;
+  border-bottom-width: 2px;
+  border-radius: 0 0 4px 4px;
+  padding: 0.4em 1em;
+  min-height: 20px;
+  background: #f7f7f7;
+  font-size: 90%;
+  line-height: 1.5;
+}
+.ckeditor-blocks-editor-block-content p {
+  margin: 0 0 12px;
+}
+.ckeditor-blocks-editor-block-content p:last-child {
+  margin: 0;
+}
