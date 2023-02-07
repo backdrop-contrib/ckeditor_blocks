@@ -27,12 +27,15 @@ And when run AFTER:
 
 ## Current maintainers
 
-- [Tim Erickson](https://github.com/stpaultim) - [Simplo](https://www.simplo.site) by [Triplo](https://www.triplo.co)
+- [Jen Lampton](https://github.com/jenlampton)
+- [Tim Erickson](https://github.com/stpaultim)
 
 ## Credits
 
-- Originally created for Drupal by: [tomdude48](https://www.drupal.org/u/tomdude48)
 - Ported to Backdrop by: [mhasan3](https://github.com/mhasan3) and [rajpaul](https://github.com/rajpaul) with financial support from (sponsor to be named soon)
+- Originally created for Drupal by: [tomdude48](https://www.drupal.org/u/tomdude48)
+- Endorsed by [Simplo](https://www.simplo.site)
+- Supported by [Triplo](https://www.triplo.co)
 
 ## License
 
