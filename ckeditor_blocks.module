@@ -228,10 +228,3 @@ function _ckeditor_blocks_tips($filter, $format, $long = FALSE) {
     array("@ckeditor_blocks_help" => url("filter/tips/$format->format", array('fragment' => 'filter-ckeditor_blocks'))));
   }
 }
-
-// Disabling entity caching for all nodes.
-// @TODO Still looking for better solution.
-
-function ckeditor_blocks_entity_info_alter(&$info) {
-  $info['node']['entity cache'] = FALSE;
-}
