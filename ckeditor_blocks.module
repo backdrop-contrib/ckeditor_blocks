@@ -169,16 +169,17 @@ function ckeditor_blocks_block_ajax($module, $delta) {
  * @return array
  */
 function ckeditor_blocks_ckeditor_plugins() {
-  $path = backdrop_get_path('module', 'ckeditor_blocks') . '/plugins/blocks';
+  $module_path = backdrop_get_path('module', 'ckeditor_blocks');
+  $plugin_path = $module_path . '/plugins/blocks';
   $plugins['blocks'] = array(
-    'path' => $path,
+    'path' => $plugin_path,
     'file' => 'plugin.js',
-    'css' => array(backdrop_get_path('module', 'ckeditor_blocks') . '/css/ckeditor_blocks.css'),
+    'css' => array($module_path . '/css/ckeditor_blocks.css'),
     'internal' => FALSE,
     'buttons' => array(
       'Blocks' => array(
         'label' => t('Blocks'),
-        'image' => $path . '/icons/blocks.png',
+        'image' => $plugin_path . '/icons/blocks.png',
       ),
     ),
   );
