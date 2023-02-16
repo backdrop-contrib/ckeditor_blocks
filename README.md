@@ -1,6 +1,6 @@
 # CKeditor Blocks
 
-A module that enables embedding drupal blocks in CKEditor. It currently uses the 
+A module that enables embedding Backdrop blocks in CKEditor. It currently uses the 
 insert_block module to render the blocks but this functionality may be moved 
 into the module to reduce dependencies.
 
